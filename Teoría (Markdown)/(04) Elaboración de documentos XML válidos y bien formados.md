@@ -1,31 +1,99 @@
-Para crear un documento XML bien formado se han de cumplir ciertos requisitos:
 
--Si un documento XML no utiliza DTD, tendrá que comenzar con una Declaración de Documento Standalone.
+# Elaboración de documentos XML válidos y bien formados
 
--Todos los elementos han de tener una etiqueta de principio y fin.
+Cuando trabajamos con XML, es importante asegurarnos de que los documentos sean bien formados y, en algunos casos, también válidos. Veamos qué significa cada uno y cómo garantizarlo.
 
--Todos los valores de los atributos deben ir entrecomillados.
+## 1. Documento XML Bien Formado
+Un documento XML es bien formado cuando sigue las reglas básicas de sintaxis de XML. Estas son algunas de las reglas clave:
 
--Cualquier elemento VACÍO(ej. <IMG>, <HR>, <BR>, etc…) debe terminar con ‘/>’ o debes añadir les una etiqueta de fin.
+✅ **Debe tener un único elemento raíz**
 
--No deben haber caracteres especiales aislados (< o &) en el texto, se debe usar &lt y &amp, si ocurre la secuencia ]]> debe darse como ]]&gt ya que ]]> representa el final de las secciones CDATA.
+```xml
+<!-- Incorrecto (sin un único elemento raíz) -->
+<libro></libro>
+<autor></autor>
+```
 
--Los elementos han de estar correctamente anidados de manera jerárquica y respetando un orden.
+✅ **Las etiquetas deben estar correctamente anidadas**
 
--Los ficheros bien formados sin DTD pueden utilizar atributos en sus elementos pero han de estar en formato CDATA.
+```xml
+<!-- Incorrecto (etiquetas mal anidadas) -->
+<b><i>Texto en negrita y cursiva</b></i>
+```
 
-Según las especificaciones del W3C, un documento XML está bien formado si:
+✅ **Las etiquetas deben cerrarse correctamente**
 
--Cumple con la regla denominada “document”.
+```xml
+<!-- Incorrecto (falta de cierre de etiqueta) -->
+<titulo>Mi libro
+```
 
--Respeta todas las restricciones de buena formación dadas en la especificación.
+✅ **Deben usarse comillas en los valores de los atributos**
 
--Cada una de las entidades analizadas que se referencia directa o indirectamente en el documento está bien formada.
+```xml
+<!-- Incorrecto (falta de comillas) -->
+<persona edad=30>
+```
 
-Para cumplir la regla “document” el documento ha de:
+## 2. Documento XML Válido
+Un documento XML es válido cuando, además de ser bien formado, sigue una estructura definida por un DTD o XSD.
 
--Contener uno o mas elementos.
+### Ejemplo con DTD (Definición de Tipo de Documento)
+DTD define qué elementos y atributos son permitidos en un XML.
 
--Hay exactamente un elemento, llamado raíz, del cual ninguna parte aparece en el contenido de ningún otro elemento.
+```xml
+<!DOCTYPE persona [
+    <!ELEMENT persona (nombre, edad)>
+    <!ELEMENT nombre (#PCDATA)>
+    <!ELEMENT edad (#PCDATA)>
+]>
+```
 
--Para el resto de elementos, los elementos delimitados por etiquetas de principio y fin han de anidarse adecuadamente mutuamente.
+### Documento XML válido según el DTD
+
+```xml
+<persona>
+    <nombre>Juan</nombre>
+    <edad>30</edad>
+</persona>
+```
+
+### Ejemplo con XSD (XML Schema Definition)
+XSD es más potente que DTD porque permite definir tipos de datos.
+
+```xml
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="persona">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="nombre" type="xs:string"/>
+                <xs:element name="edad" type="xs:int"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
+```
+
+### Documento XML válido según el XSD
+
+```xml
+<persona>
+    <nombre>Ana</nombre>
+    <edad>25</edad>
+</persona>
+```
+
+## 3. Diferencias entre XML Bien Formado y XML Válido
+
+| Característica | XML Bien Formado | XML Válido |
+|--------------|----------------|------------|
+| Cumple con la sintaxis XML | ✅ Sí | ✅ Sí |
+| Sigue una estructura definida | ❌ No | ✅ Sí (con DTD o XSD) |
+| Requerido para procesamiento XML | ✅ Sí | ⚠️ No siempre |
+
+## Conclusión
+Para crear documentos XML correctos:
+✅ Asegúrate de que sean bien formados siguiendo las reglas de sintaxis XML.
+✅ Si necesitas validación estructural, usa DTD o XSD.
+
+Siguiendo estas reglas, garantizas que los documentos XML sean compatibles y procesables sin errores.
